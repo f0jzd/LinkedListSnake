@@ -1,0 +1,50 @@
+xooo
+head tail tail
+
+x ooo
+xo oo
+xoo o
+xooo
+
+Go thrugh every single node and set them all to the position that the previous one had
+
+node.nextnode.data = node.data
+
+x ooo
+xo oo
+
+
+x ooo
+xo ooo
+xo oo
+
+
+head.nextnode.data.pos = v
+
+Vector2 v = transform.position;
+
+
+Loop through all the tails
+
+set the current tail position to the previous tail position
+go to next node
+repeat
+
+head == tail
+
+tail = v
+
+remove tail
+
+new tail
+
+tail = v
+
+remove tail
+
+
+
+
+
+
+

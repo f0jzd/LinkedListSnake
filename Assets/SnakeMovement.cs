@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class SnakeMovement : MonoBehaviour
 {
+    private LL<Transform> tails = new LL<Transform>();
     List<Transform> tail = new List<Transform>();
-    public LinkedList<Transform> tails = new LinkedList<Transform>();
     private Vector2 _dir;
     public GameObject tailPrefab;
     bool ate = false;
@@ -46,30 +46,34 @@ public class SnakeMovement : MonoBehaviour
                 Quaternion.identity);
 
             // Keep track of it in our tail list
-            tail.Insert(0, g.transform);
-
+            //tail.Insert(0, g.transform);
+            tails.Add(g.transform);
             // Reset the flag
             ate = false;
         }
         // Do we have a Tail?
-        else if (tail.Count > 0)
+        else if (tails.Count > 0)
         {
-            // Move last Tail Element to where the Head was
-            tail.Last().position = v;
+            //tail.Last().position = v;
+            tails.head.data.position = v;
+            
+            
+            
+            
+            //tail.Insert(0, tail.Last());
+            //tails.Insert(0,tails.LLtail.data);
+             
+            
+            //tail.RemoveAt(tail.Count-1);
+            //tails.RemoveAt(tails.count);
 
-            // Add to front of list, remove from the back
-            tail.Insert(0, tail.Last());
-            tail.RemoveAt(tail.Count - 1);
+
+
+
+
         }
     }
-
-    /*void OnTriggerEnter(Collision other)
-    {
-        
-        
-        
-        
-    }*/
+    
     private void OnTriggerEnter(Collider other)
     {
         // Did the snake eat something?
@@ -95,69 +99,149 @@ public class SnakeMovement : MonoBehaviour
 
 
 
-/*public class LinkedList<T>
+public class LL<T>
 {
     
-    private const int INITIAL_CAPACITY = 4;
-    private const int MAXIMUM_CAPACITY = 64;
-    public int count;
-    private int capacity;
-    private T[] items;
-    
-    
-    public Node Next;//Link to the next node in the list
-    public Node Head;
-    public Node Tail;
-    
-    public class Node<T>
-    {
-        public T Next;//Link to the next node in the list
-        public T Head;
-        public T Data;//Data of this node
+    private const int INITIAL = 4;
+    private const int MAXIMUM = 64;
+        
+        
+    public ListNode<T> head;
+    public ListNode<T> LLtail;
+        
         
 
-
-        public Node(T item)
+        
+        
+    public int count;
+    private T[] _items;
+        
+        
+    public LL(int capacity = INITIAL)
+    {
+        //_items = new T[capacity];
+        LLtail = null;
+        head = null;
+        count = 0;
+    }
+    
+    public class ListNode<T>
+    {
+        public T data;//Data of this node
+        public ListNode<T> nextNode;//Link to the next node in the list
+            
+            
+        public ListNode()
         {
-            Data = item;
-   
+            //Set the head and the tail to the same value if count is 0
+            //else?
+ 
+                
         }
     }
-    public LinkedList()
-    {
-
-        Tail = default;
-        Head = default;
-        
-        items = new T[capacity];
-        count = 0;
-
-    }
     
+    public int Count => count;
     public void Add(T item)
     {
-        Node newNode = new Node(item);
-        if (count == 0)
+            
+        ListNode<T> newNode = new ListNode<T>();
+            
+            
+        if (head == null && LLtail == null)
         {
-                
-            newNode. = item;
-               
-            Tail = newNode;
-            Head = newNode;
-            count++;
-        }
-        if (count != 0)
-        {
+            newNode.data = item;
+            //newNode.nextNode = null;
+            //_items[count] = item;
 
-            Tail. = newNode;
-            Tail = newNode;
-            //Set the tail to the next node
-            //Set the tail data to the new value
+            head = newNode;
+            LLtail = newNode;
+            count++;
+                
+                
+        }
+        else
+        {
+            newNode.data = item;
+            LLtail.nextNode = newNode;
+            LLtail = newNode;
+            //_items[count] = item;
             count++;
         }
-        count++;
+            
     }
-}*/
+    public void Insert(int index, T item)
+    {
+        int indexChecker = 0;
+        ListNode<T> temphead = head;
+        ListNode<T> newNode = new ListNode<T>();
+        newNode.data = item;
+            
+        while (temphead != null)
+        {
+            if (index == indexChecker)
+            {
+                count++;
+                newNode.nextNode = temphead.nextNode;
+                temphead.nextNode = newNode;
+
+                if (newNode.nextNode == null)
+                {
+                    LLtail = newNode;
+                }
+            }
+                
+            indexChecker++;
+            temphead = temphead.nextNode;
+        }
+    }
+    public void RemoveAt(int index)
+    {
+        int iterations =0;
+        ListNode<T> temphead = head;
+        ListNode<T> delete;
+
+            
+            
+            
+        while (temphead != null)
+        {
+            if (index== 0)
+            {
+                head = head.nextNode;
+                count--;
+                return;
+            }
+                
+            iterations++;
+            if (iterations == index)
+            {
+                if (temphead.nextNode.nextNode == null)
+                {
+                    LLtail = temphead;
+                    temphead.nextNode = null;
+                    return;
+                    count--;
+                }
+                else
+                {
+                    temphead.nextNode = temphead.nextNode.nextNode;
+                }
+                    
+            }
+            temphead = temphead.nextNode;
+        }
+            
+    }
+
+    public void Move(T tailPrefabPos)
+    {
+        
+
+
+    }
+    
+    
+}
 
 
 
