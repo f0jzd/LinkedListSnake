@@ -30,21 +30,5 @@ set the current tail position to the previous tail position
 go to next node
 repeat
 
-head == tail
 
-tail = v
-
-remove tail
-
-new tail
-
-tail = v
-
-remove tail
-
-
-
-
-
-
-
+set the current tail to another index while keeping the same lenght of the list

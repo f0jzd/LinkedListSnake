@@ -1,123 +1,114 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SnakeMovement : MonoBehaviour
 {
-    private LL<Transform> tails = new LL<Transform>();
-    List<Transform> tail = new List<Transform>();
-    private Vector2 _dir;
-    public GameObject tailPrefab;
-    bool ate = false;
+    private LinkList<Transform> tails = new LinkList<Transform>();
+    private Vector2 _moveDirection;
+    [SerializeField] private GameObject tailPrefab;
+    private bool _hasEaten = false;
+    private float _movementSpeedMultiplier  = 1;
+
+    [SerializeField] private float powerUpDuration;
+
+    private float defaultSpeed = 0.1f;
+    private float powerUpSpeed = 0.4f;
+
+    private float currentSpeed;
+    
+    
+    public GameObject dieScreen;
+    public Button restartButton;
     
     
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating(nameof(Move),0.1f,0.1f);
-        
+        currentSpeed = defaultSpeed;
+        InvokeRepeating(nameof(Move),currentSpeed,currentSpeed); //USE COROUTINE INSTEAD APPARENTLY
+        restartButton.onClick.AddListener(RestartGame);
     }
 
     private void Update()
     {
         if (Input.GetKey(KeyCode.RightArrow))
-            _dir = Vector2.right;
+            _moveDirection = Vector2.right *_movementSpeedMultiplier;
         else if (Input.GetKey(KeyCode.DownArrow))
-            _dir = -Vector2.up;    // '-up' means 'down'
+            _moveDirection = -Vector2.up * _movementSpeedMultiplier;    // '-up' means 'down'
         else if (Input.GetKey(KeyCode.LeftArrow))
-            _dir = -Vector2.right; // '-right' means 'left'
+            _moveDirection = -Vector2.right * _movementSpeedMultiplier; // '-right' means 'left'
         else if (Input.GetKey(KeyCode.UpArrow))
-            _dir = Vector2.up;
+            _moveDirection = Vector2.up * _movementSpeedMultiplier;
     }
-
     void Move() {
-        // Save current position (gap will be here)
-        Vector2 v = transform.position;
-
-        // Move head into new direction (now there is a gap)
-        transform.Translate(_dir);
-
-        // Ate something? Then insert new Element into gap
-        if (ate) {
-            // Load Prefab into the world
-            GameObject g =(GameObject)Instantiate(tailPrefab,
-                v,
-                Quaternion.identity);
-
-            // Keep track of it in our tail list
-            //tail.Insert(0, g.transform);
-            tails.Add(g.transform);
-            // Reset the flag
-            ate = false;
+        Vector2 gapToFill = transform.position;
+        transform.Translate(_moveDirection);
+        if (_hasEaten) {
+            GameObject tail =Instantiate(tailPrefab,gapToFill,Quaternion.identity);
+            tails.Add(tail.transform);
+            _hasEaten = false;
         }
-        // Do we have a Tail?
-        else if (tails.Count > 0)
+        if (tails.Count > 0)
         {
-            //tail.Last().position = v;
-            tails.head.data.position = v;
-            
-            
-            
-            
-            //tail.Insert(0, tail.Last());
-            //tails.Insert(0,tails.LLtail.data);
-             
-            
-            //tail.RemoveAt(tail.Count-1);
-            //tails.RemoveAt(tails.count);
-
-
-
-
-
+            tails.LLtail.data.position = gapToFill;
+            tails.Insert(0,tails.LLtail.data);
+            tails.RemoveAt(tails.count-1);
         }
     }
-    
     private void OnTriggerEnter(Collider other)
     {
-        // Did the snake eat something?
-        Debug.Log("Ate");
-        // Food?
         if (other.CompareTag("Food"))
         {
-            // Get longer in next Move call
-            
-            
-            
-            ate = true;
-       
-            // Remove the Food
+            _hasEaten = true;
             Destroy(other.gameObject);
         }
-        // Collided with Tail or Border
-        
+        if (other.transform.CompareTag("Tail") || other.transform.CompareTag("Wall"))
+        {
+            dieScreen.SetActive(true);
+            Time.timeScale = 0;
+        }
+
+        if (other.transform.CompareTag("PowerUp"))
+        {
+            Debug.Log("Hit Speed");
+            StartCoroutine(SpeedBoost());
+        }
     }
+
+    private void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Time.timeScale = 1;
+        dieScreen.SetActive(false);
+    }
+    IEnumerator SpeedBoost()
+    {
+
+        _movementSpeedMultiplier = 2;
+        yield return new WaitForSeconds(powerUpDuration);
+        _movementSpeedMultiplier = 1;
+    }
+
 }
 
 
 
 
 
-public class LL<T>
+
+
+public class LinkList<T>
 {
-    
-    private const int INITIAL = 4;
-    private const int MAXIMUM = 64;
-        
-        
     public ListNode<T> head;
     public ListNode<T> LLtail;
-        
-        
-
-        
-        
     public int count;
     private T[] _items;
         
         
-    public LL(int capacity = INITIAL)
+    public LinkList()
     {
         //_items = new T[capacity];
         LLtail = null;
@@ -127,44 +118,26 @@ public class LL<T>
     
     public class ListNode<T>
     {
-        public T data;//Data of this node
-        public ListNode<T> nextNode;//Link to the next node in the list
-            
-            
-        public ListNode()
-        {
-            //Set the head and the tail to the same value if count is 0
-            //else?
- 
-                
-        }
+        public T data;
+        public ListNode<T> nextNode;
     }
     
     public int Count => count;
     public void Add(T item)
     {
-            
-        ListNode<T> newNode = new ListNode<T>();
-            
-            
+        var newNode = new ListNode<T>();
         if (head == null && LLtail == null)
         {
             newNode.data = item;
-            //newNode.nextNode = null;
-            //_items[count] = item;
-
             head = newNode;
             LLtail = newNode;
             count++;
-                
-                
         }
         else
         {
             newNode.data = item;
             LLtail.nextNode = newNode;
             LLtail = newNode;
-            //_items[count] = item;
             count++;
         }
             
@@ -172,12 +145,28 @@ public class LL<T>
     public void Insert(int index, T item)
     {
         int indexChecker = 0;
-        ListNode<T> temphead = head;
-        ListNode<T> newNode = new ListNode<T>();
+        var temphead = head;
+        var newNode = new ListNode<T>();
         newNode.data = item;
-            
+        
         while (temphead != null)
         {
+            if (index == 0)
+            {
+                count++;
+                newNode.nextNode = head;
+                head = newNode;
+                    
+                if (newNode.nextNode == null)
+                {
+                    LLtail = newNode;
+                }
+                return;
+            }
+                
+            indexChecker++;
+            temphead = temphead.nextNode;
+            
             if (index == indexChecker)
             {
                 count++;
@@ -188,8 +177,8 @@ public class LL<T>
                 {
                     LLtail = newNode;
                 }
+                return;
             }
-                
             indexChecker++;
             temphead = temphead.nextNode;
         }
@@ -197,12 +186,7 @@ public class LL<T>
     public void RemoveAt(int index)
     {
         int iterations =0;
-        ListNode<T> temphead = head;
-        ListNode<T> delete;
-
-            
-            
-            
+        var temphead = head;
         while (temphead != null)
         {
             if (index== 0)
@@ -211,7 +195,6 @@ public class LL<T>
                 count--;
                 return;
             }
-                
             iterations++;
             if (iterations == index)
             {
@@ -219,28 +202,19 @@ public class LL<T>
                 {
                     LLtail = temphead;
                     temphead.nextNode = null;
-                    return;
                     count--;
+                    return;
                 }
                 else
                 {
                     temphead.nextNode = temphead.nextNode.nextNode;
                 }
-                    
             }
             temphead = temphead.nextNode;
         }
             
     }
 
-    public void Move(T tailPrefabPos)
-    {
-        
-
-
-    }
-    
-    
 }
 
 
