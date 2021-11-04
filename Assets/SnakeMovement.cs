@@ -1,63 +1,125 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SnakeMovement : MonoBehaviour
 {
+    private Camera mainCamera;
+
     private LinkList<Transform> tails = new LinkList<Transform>();
     private Vector2 _moveDirection;
+    private LineRenderer _lineRenderer;
+
+    [SerializeField] private GameObject hook;
+
+
     [SerializeField] private GameObject tailPrefab;
-    private bool _hasEaten = false;
-    private float _movementSpeedMultiplier  = 1;
+    private bool _hasEaten;
 
     [SerializeField] private float powerUpDuration;
 
-    private float defaultSpeed = 0.1f;
-    private float powerUpSpeed = 0.4f;
+    [SerializeField] private float defaultSpeed;
+    [SerializeField] private float powerUpSpeed;
 
-    private float currentSpeed;
-    
-    
+    private float _currentSpeed;
+    private bool hookShot;
+
+    private Vector3 hookBase;
+
+
+
+    private Vector3 mouseWorldPosition;
     public GameObject dieScreen;
     public Button restartButton;
-    
-    
-    // Start is called before the first frame update
+
+
     void Start()
     {
-        currentSpeed = defaultSpeed;
-        InvokeRepeating(nameof(Move),currentSpeed,currentSpeed); //USE COROUTINE INSTEAD APPARENTLY
+        hookBase = new Vector3(transform.position.x, transform.position.y, -0.5f);
+        hook = Instantiate(hook, hookBase, quaternion.identity);
+        _lineRenderer = GetComponent<LineRenderer>();
+        mainCamera = Camera.main;
+        _currentSpeed = defaultSpeed;
+        StartCoroutine(moveCall());
         restartButton.onClick.AddListener(RestartGame);
+        
     }
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.RightArrow))
-            _moveDirection = Vector2.right *_movementSpeedMultiplier;
-        else if (Input.GetKey(KeyCode.DownArrow))
-            _moveDirection = -Vector2.up * _movementSpeedMultiplier;    // '-up' means 'down'
-        else if (Input.GetKey(KeyCode.LeftArrow))
-            _moveDirection = -Vector2.right * _movementSpeedMultiplier; // '-right' means 'left'
-        else if (Input.GetKey(KeyCode.UpArrow))
-            _moveDirection = Vector2.up * _movementSpeedMultiplier;
+        
+        
+        _lineRenderer.SetPosition(0,transform.position);
+
+        Vector3 mousePos = Input.mousePosition;
+        mouseWorldPosition = mainCamera.ScreenToWorldPoint(mousePos);
+        mouseWorldPosition.z = 0;
+        
+        Vector3 targetDir = mouseWorldPosition - transform.position;
+ 
+        float angle = Mathf.Atan2(targetDir.x, targetDir.y) *- Mathf.Rad2Deg;
+        hook.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+        
+        
+        if (Input.GetMouseButton(0))
+        {
+            hook.transform.position = Vector3.Lerp(hook.transform.position, mouseWorldPosition, 0.01f);
+            //_lineRenderer.SetPosition(1, Vector3.Lerp(_lineRenderer.GetPosition(1), mouseWorldPosition, 0.01f));
+        }
+
+        if (!Input.GetMouseButton(0))
+        {
+            hook.transform.position = Vector3.Lerp(hook.transform.position,hookBase, 0.01f);
+            //_lineRenderer.SetPosition(1, Vector3.Lerp(_lineRenderer.GetPosition(1), _lineRenderer.GetPosition(0), 0.01f));
+        }
+        
+        
+        if (Input.GetMouseButton(0))
+        {
+            hookShot = true;
+        }
+        
+        if (!Input.GetMouseButton(0))
+        {
+            hookShot = false;
+        }
+        
+        
+
+        if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+            _moveDirection = Vector2.right;
+        else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
+            _moveDirection = -Vector2.up; // '-up' means 'down'
+        else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+            _moveDirection = -Vector2.right; // '-right' means 'left'
+        else if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
+            _moveDirection = Vector2.up;
     }
-    void Move() {
+
+
+    void Move()
+    {
         Vector2 gapToFill = transform.position;
         transform.Translate(_moveDirection);
-        if (_hasEaten) {
-            GameObject tail =Instantiate(tailPrefab,gapToFill,Quaternion.identity);
+        if (_hasEaten)
+        {
+            GameObject tail = Instantiate(tailPrefab, gapToFill, Quaternion.identity);
             tails.Add(tail.transform);
             _hasEaten = false;
         }
+
         if (tails.Count > 0)
         {
             tails.LLtail.data.position = gapToFill;
-            tails.Insert(0,tails.LLtail.data);
-            tails.RemoveAt(tails.count-1);
+            tails.Insert(0, tails.LLtail.data);
+            tails.RemoveAt(tails.count - 1);
         }
     }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Food"))
@@ -65,6 +127,7 @@ public class SnakeMovement : MonoBehaviour
             _hasEaten = true;
             Destroy(other.gameObject);
         }
+
         if (other.transform.CompareTag("Tail") || other.transform.CompareTag("Wall"))
         {
             dieScreen.SetActive(true);
@@ -73,9 +136,15 @@ public class SnakeMovement : MonoBehaviour
 
         if (other.transform.CompareTag("PowerUp"))
         {
+            _currentSpeed = powerUpSpeed;
+            Invoke("PowerUpSpeedChanger", powerUpDuration);
             Debug.Log("Hit Speed");
-            StartCoroutine(SpeedBoost());
         }
+    }
+
+    private void PowerUpSpeedChanger()
+    {
+        _currentSpeed = defaultSpeed;
     }
 
     private void RestartGame()
@@ -84,20 +153,19 @@ public class SnakeMovement : MonoBehaviour
         Time.timeScale = 1;
         dieScreen.SetActive(false);
     }
-    IEnumerator SpeedBoost()
+
+
+    IEnumerator moveCall()
     {
-
-        _movementSpeedMultiplier = 2;
-        yield return new WaitForSeconds(powerUpDuration);
-        _movementSpeedMultiplier = 1;
+        while (true)
+        {
+            yield return new WaitForSeconds(_currentSpeed);
+            Move();
+        }
     }
-
+    
+    
 }
-
-
-
-
-
 
 
 public class LinkList<T>
@@ -106,8 +174,8 @@ public class LinkList<T>
     public ListNode<T> LLtail;
     public int count;
     private T[] _items;
-        
-        
+
+
     public LinkList()
     {
         //_items = new T[capacity];
@@ -115,14 +183,15 @@ public class LinkList<T>
         head = null;
         count = 0;
     }
-    
+
     public class ListNode<T>
     {
         public T data;
         public ListNode<T> nextNode;
     }
-    
+
     public int Count => count;
+
     public void Add(T item)
     {
         var newNode = new ListNode<T>();
@@ -140,15 +209,15 @@ public class LinkList<T>
             LLtail = newNode;
             count++;
         }
-            
     }
+
     public void Insert(int index, T item)
     {
         int indexChecker = 0;
         var temphead = head;
         var newNode = new ListNode<T>();
         newNode.data = item;
-        
+
         while (temphead != null)
         {
             if (index == 0)
@@ -156,17 +225,18 @@ public class LinkList<T>
                 count++;
                 newNode.nextNode = head;
                 head = newNode;
-                    
+
                 if (newNode.nextNode == null)
                 {
                     LLtail = newNode;
                 }
+
                 return;
             }
-                
+
             indexChecker++;
             temphead = temphead.nextNode;
-            
+
             if (index == indexChecker)
             {
                 count++;
@@ -177,24 +247,28 @@ public class LinkList<T>
                 {
                     LLtail = newNode;
                 }
+
                 return;
             }
+
             indexChecker++;
             temphead = temphead.nextNode;
         }
     }
+
     public void RemoveAt(int index)
     {
-        int iterations =0;
+        int iterations = 0;
         var temphead = head;
         while (temphead != null)
         {
-            if (index== 0)
+            if (index == 0)
             {
                 head = head.nextNode;
                 count--;
                 return;
             }
+
             iterations++;
             if (iterations == index)
             {
@@ -210,19 +284,8 @@ public class LinkList<T>
                     temphead.nextNode = temphead.nextNode.nextNode;
                 }
             }
+
             temphead = temphead.nextNode;
         }
-            
     }
-
 }
-
-
-
-
-
-
-
-
-
-
