@@ -9,7 +9,10 @@ public class SnakeMovement : MonoBehaviour
 {
     private Camera mainCamera;
 
-    private LinkList<Transform> tails = new LinkList<Transform>();
+    private TileManager tileManager;
+    
+
+    [HideInInspector]public LinkList<Transform> tails = new LinkList<Transform>();
     private Vector2 _moveDirection;
     private LineRenderer _lineRenderer;
 
@@ -17,7 +20,7 @@ public class SnakeMovement : MonoBehaviour
 
 
     [SerializeField] private GameObject tailPrefab;
-    private bool _hasEaten;
+    public bool _hasEaten;
 
     [SerializeField] private float powerUpDuration;
 
@@ -26,6 +29,7 @@ public class SnakeMovement : MonoBehaviour
 
     private float _currentSpeed;
     private bool hookShot;
+    private bool isDead;
 
     private Vector3 hookBase;
 
@@ -38,7 +42,7 @@ public class SnakeMovement : MonoBehaviour
 
     void Start()
     {
-        hookBase = new Vector3(transform.position.x, transform.position.y, -0.5f);
+        tileManager = FindObjectOfType<TileManager>();
         hook = Instantiate(hook, hookBase, quaternion.identity);
         _lineRenderer = GetComponent<LineRenderer>();
         mainCamera = Camera.main;
@@ -46,13 +50,18 @@ public class SnakeMovement : MonoBehaviour
         StartCoroutine(moveCall());
         restartButton.onClick.AddListener(RestartGame);
         
+        
+        
     }
 
     private void Update()
     {
+        //Debug.Log($"Screen Height: {Screen.height}, Screen Width{Screen.width}");
         
-        
+        hookBase = new Vector3(transform.position.x, transform.position.y, -0.5f);
         _lineRenderer.SetPosition(0,transform.position);
+        _lineRenderer.SetPosition(1,hook.transform.position);
+        
 
         Vector3 mousePos = Input.mousePosition;
         mouseWorldPosition = mainCamera.ScreenToWorldPoint(mousePos);
@@ -65,15 +74,15 @@ public class SnakeMovement : MonoBehaviour
 
         
         
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && !isDead)
         {
             hook.transform.position = Vector3.Lerp(hook.transform.position, mouseWorldPosition, 0.01f);
             //_lineRenderer.SetPosition(1, Vector3.Lerp(_lineRenderer.GetPosition(1), mouseWorldPosition, 0.01f));
         }
 
-        if (!Input.GetMouseButton(0))
+        if (!Input.GetMouseButton(0)&& !isDead)
         {
-            hook.transform.position = Vector3.Lerp(hook.transform.position,hookBase, 0.01f);
+            hook.transform.position = Vector3.Lerp(hook.transform.position,hookBase, 0.02f);
             //_lineRenderer.SetPosition(1, Vector3.Lerp(_lineRenderer.GetPosition(1), _lineRenderer.GetPosition(0), 0.01f));
         }
         
@@ -102,7 +111,27 @@ public class SnakeMovement : MonoBehaviour
 
 
     void Move()
-    {
+    {//CLEAN THIS UP PLEASE ITS CAN BE MUCH NICOER
+
+        if (transform.position.x >= tileManager.gridSize)
+        {
+            transform.position = new Vector2(-tileManager.gridSize+1, transform.position.y);
+        }
+        if (transform.position.x <= -tileManager.gridSize)
+        {
+            transform.position = new Vector2(tileManager.gridSize-1, transform.position.y);
+        }
+        if (transform.position.y > tileManager.gridSize/2)
+        {
+            transform.position = new Vector2(transform.position.x, -tileManager.gridSize/2);
+        }
+        if (transform.position.y < -tileManager.gridSize/2)
+        {
+            transform.position = new Vector2(transform.position.x, tileManager.gridSize/2);
+        }
+        
+        
+        
         Vector2 gapToFill = transform.position;
         transform.Translate(_moveDirection);
         if (_hasEaten)
@@ -130,6 +159,7 @@ public class SnakeMovement : MonoBehaviour
 
         if (other.transform.CompareTag("Tail") || other.transform.CompareTag("Wall"))
         {
+            isDead = true;
             dieScreen.SetActive(true);
             Time.timeScale = 0;
         }
@@ -151,7 +181,7 @@ public class SnakeMovement : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1;
-        dieScreen.SetActive(false);
+        //dieScreen.SetActive(false);
     }
 
 
