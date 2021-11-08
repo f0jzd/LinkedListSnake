@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: b9bc0734b7cf2a6469557ba984c27f33
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - rocktile: {fileID: 1330908599717102740, guid: 2de71f89f937ef94ea62fb76a859e41d, type: 3}
+  - normalTile: {fileID: 2679090989910668251, guid: f0a72806b3faafd4281035ee29c029a7, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

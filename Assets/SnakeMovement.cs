@@ -34,15 +34,25 @@ public class SnakeMovement : MonoBehaviour
     private Vector3 hookBase;
 
 
+    private Vector3 snakePosition;
+
 
     private Vector3 mouseWorldPosition;
+
+    private Tile _tile;
+
+    private CameraManager _cameraManager;
     public GameObject dieScreen;
     public Button restartButton;
 
 
     void Start()
     {
+        _tile = FindObjectOfType<Tile>();
+        _cameraManager = FindObjectOfType<CameraManager>();
         tileManager = FindObjectOfType<TileManager>();
+        transform.position = new Vector2(_cameraManager.width / 2, _cameraManager.height / 2);
+        snakePosition = transform.position;
         hook = Instantiate(hook, hookBase, quaternion.identity);
         _lineRenderer = GetComponent<LineRenderer>();
         mainCamera = Camera.main;
@@ -72,6 +82,7 @@ public class SnakeMovement : MonoBehaviour
         float angle = Mathf.Atan2(targetDir.x, targetDir.y) *- Mathf.Rad2Deg;
         hook.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
+
         
         
         if (Input.GetMouseButton(0) && !isDead)
@@ -82,7 +93,7 @@ public class SnakeMovement : MonoBehaviour
 
         if (!Input.GetMouseButton(0)&& !isDead)
         {
-            hook.transform.position = Vector3.Lerp(hook.transform.position,hookBase, 0.02f);
+            hook.transform.position = hookBase;
             //_lineRenderer.SetPosition(1, Vector3.Lerp(_lineRenderer.GetPosition(1), _lineRenderer.GetPosition(0), 0.01f));
         }
         
@@ -107,30 +118,28 @@ public class SnakeMovement : MonoBehaviour
             _moveDirection = -Vector2.right; // '-right' means 'left'
         else if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
             _moveDirection = Vector2.up;
+        
+        if (transform.position.x >= _cameraManager.width)
+        {
+            transform.position = new Vector2(0, transform.position.y);
+        }
+        if (transform.position.x < 0)
+        {
+            transform.position = new Vector2(_cameraManager.width-1, transform.position.y);
+        }
+        if (transform.position.y > _cameraManager.height)
+        {
+            transform.position = new Vector2(transform.position.x, 0);
+        }
+        if (transform.position.y < 0)
+        {
+            transform.position = new Vector2(transform.position.x, _cameraManager.height);
+        }
     }
 
 
     void Move()
     {//CLEAN THIS UP PLEASE ITS CAN BE MUCH NICOER
-
-        if (transform.position.x >= tileManager.gridSize)
-        {
-            transform.position = new Vector2(-tileManager.gridSize+1, transform.position.y);
-        }
-        if (transform.position.x <= -tileManager.gridSize)
-        {
-            transform.position = new Vector2(tileManager.gridSize-1, transform.position.y);
-        }
-        if (transform.position.y > tileManager.gridSize/2)
-        {
-            transform.position = new Vector2(transform.position.x, -tileManager.gridSize/2);
-        }
-        if (transform.position.y < -tileManager.gridSize/2)
-        {
-            transform.position = new Vector2(transform.position.x, tileManager.gridSize/2);
-        }
-        
-        
         
         Vector2 gapToFill = transform.position;
         transform.Translate(_moveDirection);
