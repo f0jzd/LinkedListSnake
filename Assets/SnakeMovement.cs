@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
@@ -41,6 +42,8 @@ public class SnakeMovement : MonoBehaviour
 
     private Tile _tile;
 
+    private Board board;
+
     private CameraManager _cameraManager;
     public GameObject dieScreen;
     public Button restartButton;
@@ -48,6 +51,7 @@ public class SnakeMovement : MonoBehaviour
 
     void Start()
     {
+        board = FindObjectOfType<Board>();
         _tile = FindObjectOfType<Tile>();
         _cameraManager = FindObjectOfType<CameraManager>();
         tileManager = FindObjectOfType<TileManager>();
@@ -82,7 +86,14 @@ public class SnakeMovement : MonoBehaviour
         float angle = Mathf.Atan2(targetDir.x, targetDir.y) *- Mathf.Rad2Deg;
         hook.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
+      
 
+
+
+        
+        Debug.Log();
+        
+        
         
         
         if (Input.GetMouseButton(0) && !isDead)

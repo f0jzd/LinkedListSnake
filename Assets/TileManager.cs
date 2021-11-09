@@ -42,14 +42,14 @@ public class TileManager : MonoBehaviour
                 {
                     var placeTile = Instantiate(_tile.Rocktile, new Vector2(i, j), quaternion.identity);
                     
-                    placeTile.GetComponent<Tile>().TilePositions = new Vector2Int[i,j];//Somethigns fucky here
-                    Debug.Log(placeTile.GetComponent<Tile>().TilePositions);
+                    //placeTile.GetComponent<Tile>().TilePositions = new Vector2Int[i,j];//Somethigns fucky here
+                    
 
                 }
                 else
                 {
                     var placeTile = Instantiate(_tile.NormalTile, new Vector2(i, j), quaternion.identity);
-                    placeTile.GetComponent<Tile>().TilePositions = new Vector2Int[i,j];
+                    //placeTile.GetComponent<Tile>().TilePositions = new Vector2Int[i,j];
                 }
                     
                 

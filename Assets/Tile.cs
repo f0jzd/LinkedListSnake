@@ -8,12 +8,13 @@ public class Tile : MonoBehaviour
 
     public GameObject rocktile;
     public GameObject normalTile;
+    [HideInInspector] public GameObject tiletype;
     
     
     
     public bool walkable;
     private SpriteRenderer _spriteRenderer;
-    public Vector2Int[,] tilePositions;
+    public Vector2Int tilePositions;
 
 
     public Tile()
@@ -22,23 +23,7 @@ public class Tile : MonoBehaviour
     }
 
     
-    public Vector2Int[,] TilePositions
-    {
 
-
-
-        get
-        {
-            return tilePositions;
-        }
-
-        set
-        {
-            
-            tilePositions = value;
-        }
-    }
-    
 
     public GameObject Rocktile
     {
@@ -49,7 +34,13 @@ public class Tile : MonoBehaviour
         get => normalTile;
     }
 
-    
+    public GameObject Tiletype
+    {
+
+        get => tiletype;
+
+        set => tiletype = value;
+    }
 }
 
 
