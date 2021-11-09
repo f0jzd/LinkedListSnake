@@ -7,13 +7,16 @@ public class Board : MonoBehaviour
     
     [SerializeField] private GameObject normalTile;
     [SerializeField] private GameObject rockTile;
-    private Tile[,] _tile;
+    public Tile[,] _grid;
     private CameraManager _cameraManager;
 
 
     private void Start()
     {
+
+        
         _cameraManager = FindObjectOfType<CameraManager>();
+        _grid = new Tile[_cameraManager.width, _cameraManager.height];
         
         
         
@@ -27,21 +30,18 @@ public class Board : MonoBehaviour
                 if (Random.Range(0,5) == 2)
                 {
                     var placeTile = Instantiate(rockTile, new Vector2(i, j), quaternion.identity);
+                    //placeTile.GetComponent<Rocktile>();
 
-                    
+                    _grid[i, j] = placeTile.GetComponent<RockTile>();
                     
 
-                    placeTile.GetComponent<Tile>().tilePositions = new Vector2Int(i,j);
-                    placeTile.GetComponent<Tile>().tiletype = rockTile;
-                    
-                    Debug.Log(placeTile.GetComponent<Tile>().tilePositions);
-                    
                 }
                 else
                 {
                     var placeTile = Instantiate(normalTile, new Vector2(i, j), quaternion.identity);
-                    placeTile.GetComponent<Tile>().tilePositions = new Vector2Int(i,j);
-                    placeTile.GetComponent<Tile>().Tiletype = normalTile;
+                    //placeTile.GetComponent<NormalTile>();
+                    
+                    _grid[i, j] = placeTile.GetComponent<NormalTile>();
 
 
                 }

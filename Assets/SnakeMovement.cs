@@ -48,9 +48,16 @@ public class SnakeMovement : MonoBehaviour
     public GameObject dieScreen;
     public Button restartButton;
 
+    private int withinBoundsX;
+    private int withinBoundsY;
+    
+    
 
     void Start()
     {
+
+        
+        
         board = FindObjectOfType<Board>();
         _tile = FindObjectOfType<Tile>();
         _cameraManager = FindObjectOfType<CameraManager>();
@@ -64,7 +71,8 @@ public class SnakeMovement : MonoBehaviour
         StartCoroutine(moveCall());
         restartButton.onClick.AddListener(RestartGame);
         
-        
+        withinBoundsX = _cameraManager.width;
+        withinBoundsY = _cameraManager.height;
         
     }
 
@@ -86,12 +94,18 @@ public class SnakeMovement : MonoBehaviour
         float angle = Mathf.Atan2(targetDir.x, targetDir.y) *- Mathf.Rad2Deg;
         hook.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
-      
+
+
+
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            Invoke("Debugger",0);
+        }
 
 
 
         
-        Debug.Log();
         
         
         
@@ -146,8 +160,32 @@ public class SnakeMovement : MonoBehaviour
         {
             transform.position = new Vector2(transform.position.x, _cameraManager.height);
         }
+        
+        
+        int snakeX = (int) transform.position.x;
+        int snakeY = (int) transform.position.y;
+
+        
+
+
+        if (snakeX < withinBoundsX && snakeY < withinBoundsY)
+        {
+            Tile currentTile = board._grid[snakeX, snakeY];
+
+            
+            Debug.Log(currentTile);
+        }
+        
+        
     }
 
+    void Debugger()
+    {
+        /*foreach (var VARIABLE in board._grid)
+        {
+            Debug.Log(VARIABLE);
+        }*/
+    }
 
     void Move()
     {//CLEAN THIS UP PLEASE ITS CAN BE MUCH NICOER

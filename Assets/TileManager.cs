@@ -40,7 +40,7 @@ public class TileManager : MonoBehaviour
 
                 if (Random.Range(0,5) == 2)
                 {
-                    var placeTile = Instantiate(_tile.Rocktile, new Vector2(i, j), quaternion.identity);
+                    //var placeTile = Instantiate(_tile.Rocktile, new Vector2(i, j), quaternion.identity);
                     
                     //placeTile.GetComponent<Tile>().TilePositions = new Vector2Int[i,j];//Somethigns fucky here
                     
@@ -48,7 +48,7 @@ public class TileManager : MonoBehaviour
                 }
                 else
                 {
-                    var placeTile = Instantiate(_tile.NormalTile, new Vector2(i, j), quaternion.identity);
+                    //var placeTile = Instantiate(_tile.NormalTile, new Vector2(i, j), quaternion.identity);
                     //placeTile.GetComponent<Tile>().TilePositions = new Vector2Int[i,j];
                 }
                     
