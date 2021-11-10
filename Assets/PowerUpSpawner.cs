@@ -2,11 +2,10 @@ using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class FruitSpawner : MonoBehaviour
+public class PowerUpSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject fruit;
+    [SerializeField] private GameObject powerUp;
 
-    private TileManager _tileManager;
     private CameraManager _cameraManager;
 
     private int _randomY;
@@ -15,14 +14,12 @@ public class FruitSpawner : MonoBehaviour
     void Start()
     {
         _cameraManager = FindObjectOfType<CameraManager>();
-        _tileManager = FindObjectOfType<TileManager>();
+        FindObjectOfType<TileManager>();
         
         _randomX = Random.Range(0, _cameraManager.BoardWidth);
         _randomY = Random.Range(0, _cameraManager.BoardHeight);
-        
-        GameObject fruitInstance = Instantiate(fruit,
-            new Vector3(_randomX,_randomY, 0),
-            quaternion.identity);
+
+        Instantiate(powerUp, new Vector3(_randomX, _randomY), Quaternion.identity);
     }
 
     public void Spawner()
@@ -30,9 +27,7 @@ public class FruitSpawner : MonoBehaviour
         _randomX = Random.Range(0, _cameraManager.BoardWidth);
         _randomY = Random.Range(0, _cameraManager.BoardHeight);
         
-        GameObject fruitInstance = Instantiate(fruit,
-            new Vector3(_randomX,_randomY, 0),
-            quaternion.identity);
+        Instantiate(powerUp, new Vector3(_randomX,_randomY),Quaternion.identity);
         
     }
 }

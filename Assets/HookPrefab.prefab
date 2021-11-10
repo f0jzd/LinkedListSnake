@@ -10,11 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8092316193747835613}
   - component: {fileID: 5805605280318125709}
-  - component: {fileID: 8945608681945438360}
   - component: {fileID: 3147909703584183054}
   m_Layer: 0
   m_Name: HookPrefab
-  m_TagString: Untagged
+  m_TagString: Hook
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -27,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8274533775348057074}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 25.909143, y: 45.251457, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.3376979, y: 0.23238194, z: 0.22894771}
   m_Children: []
   m_Father: {fileID: 0}
@@ -85,18 +84,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &8945608681945438360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8274533775348057074}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91271a53796174a448b5e9daef3741fa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!65 &3147909703584183054
 BoxCollider:
   m_ObjectHideFlags: 0

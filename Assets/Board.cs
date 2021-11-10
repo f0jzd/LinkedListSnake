@@ -7,6 +7,9 @@ public class Board : MonoBehaviour
     
     [SerializeField] private GameObject normalTile;
     [SerializeField] private GameObject rockTile;
+    [Header("Spawn Chance in %")]
+    [SerializeField] private int rockSpawnChance;
+    
     public Tile[,] _grid;
     private CameraManager _cameraManager;
 
@@ -16,18 +19,18 @@ public class Board : MonoBehaviour
 
         
         _cameraManager = FindObjectOfType<CameraManager>();
-        _grid = new Tile[_cameraManager.width, _cameraManager.height];
+        _grid = new Tile[_cameraManager.BoardWidth, _cameraManager.BoardHeight];
         
         
         
-        for (int i = 0; i < _cameraManager.width; i++)
+        for (int i = 0; i < _cameraManager.BoardWidth; i++)
         {
-            for (int j = 0; j < _cameraManager.height; j++)
+            for (int j = 0; j < _cameraManager.BoardHeight; j++)
             {
 
                 
                 
-                if (Random.Range(0,5) == 2)
+                if (Random.Range(0,100) < rockSpawnChance)
                 {
                     var placeTile = Instantiate(rockTile, new Vector2(i, j), quaternion.identity);
                     //placeTile.GetComponent<Rocktile>();

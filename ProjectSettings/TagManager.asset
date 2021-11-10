@@ -8,6 +8,8 @@ TagManager:
   - Tail
   - Wall
   - PowerUp
+  - SnakeHead
+  - Hook
   layers:
   - Default
   - TransparentFX

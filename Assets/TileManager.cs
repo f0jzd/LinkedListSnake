@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -28,17 +24,15 @@ public class TileManager : MonoBehaviour
         
         _cameraManager = FindObjectOfType<CameraManager>();
         
-        Random.Range(0, 5);
-        
         
         //_tile = new Vector2[gridSize+1, gridSize+1];
         
-        for (int i = 0; i < _cameraManager.width; i++)
+        for (int i = 0; i < _cameraManager.BoardWidth; i++)
         {
-            for (int j = 0; j < _cameraManager.height; j++)
+            for (int j = 0; j < _cameraManager.BoardHeight; j++)
             {
 
-                if (Random.Range(0,5) == 2)
+                if (Random.Range(0,15) == 2)
                 {
                     //var placeTile = Instantiate(_tile.Rocktile, new Vector2(i, j), quaternion.identity);
                     
