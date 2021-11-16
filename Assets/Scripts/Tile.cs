@@ -5,6 +5,7 @@ public class Tile : MonoBehaviour
 
     private string tiletype;
     
+    
 
     public string Tiletype
     {
@@ -13,6 +14,7 @@ public class Tile : MonoBehaviour
 
         set => tiletype = value;
     }
+    
 }
 
 

@@ -31,8 +31,6 @@ public class SnakeMovement : MonoBehaviour
     private float powerUpDuration;
     
     
-    
-
     void Start()
     {
 
