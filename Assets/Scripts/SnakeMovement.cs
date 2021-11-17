@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class SnakeMovement : MonoBehaviour
 {
@@ -18,78 +20,95 @@ public class SnakeMovement : MonoBehaviour
     [HideInInspector] public bool isDead;
     
     private Vector2 _moveDirection;
+    private Vector3 playerPosition;
     private Vector3 mouseWorldPosition;
+    
     private Board board;
     private CameraManager _cameraManager;
-    private int withinBoundsX;
-    private int withinBoundsY;
-    private float _currentSpeed;
-    private Vector3 playerPosition;
-    private FruitSpawner _fruitSpawner;
-    private float elapsedTime;
     private PowerUpSpawner _powerUpSpawner;
+    private FruitSpawner _fruitSpawner;
+    
+    
+    private float elapsedTime;
     private float powerUpDuration;
+    private float _currentSpeed;
+
+    private bool moveRight;
+    private bool moveLeft;
+    private bool moveUp;
+    private bool moveDown;
+
+    private SnakeMoveDirection direction; 
+
+    enum SnakeMoveDirection
+    {
+     moveRight= 0,
+     moveLeft= 1,
+     moveUp= 2,
+     moveDown= 3,
+    }
     
     
-    void Start()
+    void Awake()
     {
 
         board = FindObjectOfType<Board>();
         _cameraManager = FindObjectOfType<CameraManager>();
         transform.position = new Vector2(_cameraManager.BoardWidth / 2, _cameraManager.BoardHeight / 2);
         _currentSpeed = snakeSpeed;
-        StartCoroutine(moveCall());
         restartButton.onClick.AddListener(RestartGame);
         _fruitSpawner = FindObjectOfType<FruitSpawner>();
         _powerUpSpawner = FindObjectOfType<PowerUpSpawner>();
         
+        direction = (SnakeMoveDirection) Random.Range(0, 3);
         
         
-        withinBoundsX = _cameraManager.BoardWidth;
-        withinBoundsY = _cameraManager.BoardHeight;
+        
         
     }
 
     private void Update()
     {
-        playerPosition = transform.position;
         
-        if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
-            _moveDirection = Vector2.right;
-        else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
-            _moveDirection = Vector2.down;
-        else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
-            _moveDirection = Vector2.left;
-        else if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
-            _moveDirection = Vector2.up;
-        
-        
-        if (transform.position.x >= _cameraManager.BoardWidth)
-            transform.position = new Vector2(0, transform.position.y);
-        if (transform.position.x < 0)
-            transform.position = new Vector2(_cameraManager.BoardWidth-1, transform.position.y);
-        if (transform.position.y > _cameraManager.BoardHeight-1)
-            transform.position = new Vector2(transform.position.x, 0);
-        if (transform.position.y < 0)
-            transform.position= new Vector2(transform.position.x, _cameraManager.BoardHeight-1);
-        
-        
-        
-        int snakeX = (int) playerPosition.x;
-        int snakeY = (int) playerPosition.y;
+        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+            direction = SnakeMoveDirection.moveRight;
+        else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
+            direction = SnakeMoveDirection.moveDown;
+        else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+            direction = SnakeMoveDirection.moveLeft;
+        else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
+            direction = SnakeMoveDirection.moveUp;
 
-        
-        if (snakeX < withinBoundsX && snakeY < withinBoundsY && snakeX > 0 && snakeY > 0)
-        {
-            Tile currentTile = board._grid[snakeX, snakeY];
-        }
+        playerPosition = transform.position;
+
     }
     
     void Move()
     {
         
+        int snakeX = (int) playerPosition.x;
+        int snakeY = (int) playerPosition.y;
+        var newPos = board._grid[snakeX, snakeY];
+        
+        if (direction == SnakeMoveDirection.moveDown)
+            newPos = newPos.transform.position.y-1 < 0 ? board._grid[snakeX, _cameraManager.BoardHeight-1] : board._grid[snakeX, snakeY - 1];
+        
+        if (direction == SnakeMoveDirection.moveUp)
+            newPos = newPos.transform.position.y+1 > _cameraManager.BoardHeight-1 ? board._grid[snakeX, 0] : board._grid[snakeX, snakeY + 1];
+        
+        if (direction == SnakeMoveDirection.moveLeft) 
+            newPos = newPos.transform.position.x-1 < 0 ? board._grid[_cameraManager.BoardWidth-1, snakeY] : board._grid[snakeX-1, snakeY];
+        
+        if (direction == SnakeMoveDirection.moveRight) 
+            newPos = newPos.transform.position.x+1 > _cameraManager.BoardWidth-1 ? board._grid[0, snakeY] : board._grid[snakeX+1, snakeY];
+        
+        
         Vector2 gapToFill = transform.position;
-        transform.Translate(_moveDirection);
+        transform.position = newPos.transform.position;
+        
+        
+        
+        
         if (_hasEaten)
         {
             _fruitSpawner.Invoke("Spawner",0);
@@ -133,7 +152,7 @@ public class SnakeMovement : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1;
-        //dieScreen.SetActive(false);
+        dieScreen.SetActive(false);
     }
 
 
@@ -155,8 +174,7 @@ public class SnakeMovement : MonoBehaviour
             }
 
             yield return null;
-
-
+            
         }
     }
 }

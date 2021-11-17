@@ -6,6 +6,9 @@ public class Tile : MonoBehaviour
     private string tiletype;
     
     
+    
+    
+    
 
     public string Tiletype
     {

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
@@ -8,7 +10,7 @@ using Random = UnityEngine.Random;
 public class Pathfinding : MonoBehaviour
 {
     public Graph<Transform> graph = new Graph<Transform>();
-    public Vertex<Transform>[] verticesArray;
+    public Vertex<Transform>[,] verticesArray;
     
     private CameraManager _cameraManager;
 
@@ -16,7 +18,7 @@ public class Pathfinding : MonoBehaviour
     private void Awake()
     {
         _cameraManager = FindObjectOfType<CameraManager>();
-        verticesArray = new Vertex<Transform>[_cameraManager.BoardHeight * _cameraManager.BoardWidth];
+        verticesArray = new Vertex<Transform>[_cameraManager.BoardWidth,_cameraManager.BoardHeight];
 
         /*
         for( int i = 0; i < verticesArray.Length; i++ ) {
@@ -53,13 +55,15 @@ public class Pathfinding : MonoBehaviour
 
 public class Graph<T>
 {
-    private List<IVertex<T>> _vertices;    //Using list isntead of hashset since list is ordered and easier to print
-    private HashSet<Edge<T>> _edges; //Used to inspect the graph
+    private List<IVertex<T>> _vertices;    //Using list instead of hashset since list is ordered and easier to print
+    private HashSet<Edge<T>> _edges;       //Used to inspect the graph
     
     
     public int Order => _vertices.Count;
 
     public int Size => _edges.Count;
+    
+    
 
     public IVertex<T>[] Vertices => _vertices.ToArray();
 
@@ -74,12 +78,12 @@ public class Graph<T>
             //Gets the array of vertices and edges.
         }
     }
-    
     public Graph()
     {
         _vertices = new List<IVertex<T>>();
         _edges = new HashSet<Edge<T>>();
     }
+
 
     public void AddVertex(IVertex<T> vertex)
     {
@@ -88,27 +92,35 @@ public class Graph<T>
 
     public void AddEdge(IVertex<T> v1, IVertex<T> v2, float weight)
     {
-            
-        //This would be enough but..?
-        //One position represent two relations, depends on how we want to think about it when we calculate the size.
+        
         _edges.Add(v1.AddEdge(v2, weight));
         _edges.Add(v2.AddEdge(v1, weight));
 
     }
 
-    
-    
 
+    public void Pathfinder(Graph<T> graph, Vertex<T> start, Vertex<T> end)
+    {
+        
 
+    }
 }
 
 public class Vertex<T> : IVertex<T>
 {
-    private T _value;//Vertex Data, it is refered to IVertex it doesent know what type is it
+    private T _value;//Vertex Data, it is referred to IVertex it doesnt know what type is it
     private Type _type;
     private HashSet<Edge<T>> outgoing; //List of edges, these are the edges going out from this vertex
     private int indexInGraph;
-    
+
+/*
+    public int G { get; set; } = 0;
+
+    public int H { get; set; } = 0;
+
+    public int F { get; set; } = 0;
+*/
+
     public Type Type => _type;
     public T Value => _value;
     public int IndexInGraph => indexInGraph;
@@ -150,7 +162,7 @@ public class Edge<T>
 
     public float Cost => cost;
 
-    public Edge(IVertex<T> source,IVertex<T> destination, float cost)
+    public Edge(IVertex<T> source,IVertex<T> destination, float cost = 1)
     {
             
         //an edge has source desitnation and weight, it goes from seomthing to something weith the wieght inbetween
@@ -166,5 +178,5 @@ public interface IVertex<T>
     T Value { get; }
     int IndexInGraph { get; }
     HashSet<Edge<T>> EdgesHashSet { get; }
-    Edge<T> AddEdge( IVertex<T> target, float weight);
+    Edge<T> AddEdge( IVertex<T> target, float weight = 1);
 }

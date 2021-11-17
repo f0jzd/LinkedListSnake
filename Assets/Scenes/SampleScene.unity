@@ -253,8 +253,6 @@ MonoBehaviour:
   normalTile: {fileID: 2679090989910668251, guid: f0a72806b3faafd4281035ee29c029a7, type: 3}
   rockTile: {fileID: 1330908599717102740, guid: 2de71f89f937ef94ea62fb76a859e41d, type: 3}
   rockSpawnChance: 5
-  pathfinder: {fileID: 0}
-  _cameraManager: {fileID: 0}
 --- !u!4 &414009339
 Transform:
   m_ObjectHideFlags: 0
@@ -281,7 +279,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b191ae0e9752e11428a50b9da8017b64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cameraManager: {fileID: 0}
 --- !u!1 &508358845
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,9 +309,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   powerUp: {fileID: 2446909504270771031, guid: b759ff4b2fe2c9b4f83cb446538f7b00, type: 3}
-  _cameraManager: {fileID: 0}
-  _randomY: 0
-  _randomX: 0
 --- !u!4 &508358847
 Transform:
   m_ObjectHideFlags: 0
@@ -368,10 +362,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c495bf978f9643f4bb709fb273c314b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BoardWidth: 10
-  BoardHeight: 10
+  BoardWidth: 20
+  BoardHeight: 20
   borderSize: 0
-  _tileManager: {fileID: 0}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -676,10 +669,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fruit: {fileID: 6076650291987384660, guid: 35baa71d92996ed41b2de78aa356a707, type: 3}
-  _tileManager: {fileID: 0}
-  _cameraManager: {fileID: 0}
-  _randomY: 0
-  _randomX: 0
 --- !u!4 &1211719335
 Transform:
   m_ObjectHideFlags: 0
@@ -815,24 +804,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1652139218}
   m_CullTransparentMesh: 1
---- !u!1 &1875671099 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6427562722697094322, guid: b48ed70b700bbce4d9ae8a57bf993f42, type: 3}
-  m_PrefabInstance: {fileID: 6427562722403635644}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1875671108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1875671099}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b191ae0e9752e11428a50b9da8017b64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _cameraManager: {fileID: 0}
 --- !u!1 &1877371206
 GameObject:
   m_ObjectHideFlags: 0
@@ -1045,16 +1016,12 @@ PrefabInstance:
       value: SnakeHead
       objectReference: {fileID: 0}
     - target: {fileID: 6427562722697094323, guid: b48ed70b700bbce4d9ae8a57bf993f42, type: 3}
-      propertyPath: duration
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6427562722697094323, guid: b48ed70b700bbce4d9ae8a57bf993f42, type: 3}
       propertyPath: dieScreen
       value: 
       objectReference: {fileID: 2064750925}
     - target: {fileID: 6427562722697094323, guid: b48ed70b700bbce4d9ae8a57bf993f42, type: 3}
       propertyPath: snakeSpeed
-      value: 0.03
+      value: 0.06
       objectReference: {fileID: 0}
     - target: {fileID: 6427562722697094323, guid: b48ed70b700bbce4d9ae8a57bf993f42, type: 3}
       propertyPath: restartButton
