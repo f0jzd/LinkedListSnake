@@ -55,19 +55,20 @@ public class Board : MonoBehaviour
                 }
             }
         }
+        
+        
+        
+        
+        
         for (int i = 0; i < _cameraManager.BoardWidth; i++)
         {
-            for (int j = 0; j < _cameraManager.BoardHeight; j++)
+            for (int j = 1; j < _cameraManager.BoardHeight; j++)
             {
-                if (i+1 < _cameraManager.BoardWidth)
-                {
-                    pathfinder.graph.AddEdge(pathfinder.verticesArray[i, j], pathfinder.verticesArray[i+1, j], 1);
-                }
+
+             
+                pathfinder.graph.AddEdge(pathfinder.verticesArray[i, i], pathfinder.verticesArray[i, j], j);
+                pathfinder.graph.AddEdge(pathfinder.verticesArray[i, i], pathfinder.verticesArray[j, i], j);
                 
-                if (j+1 < _cameraManager.BoardHeight)
-                {
-                    pathfinder.graph.AddEdge(pathfinder.verticesArray[i, j], pathfinder.verticesArray[i, j+1], 1);
-                }
                 
                 /*pathfinder.graph.AddEdge(pathfinder.verticesArray[i, j], pathfinder.verticesArray[i+1, j], 1);
                 pathfinder.graph.AddEdge(pathfinder.verticesArray[i, j], pathfinder.verticesArray[i+1, j], 1);
@@ -77,6 +78,21 @@ public class Board : MonoBehaviour
 
         }
 
+        Debug.Log(pathfinder.verticesArray[0,0].Outgoing);
+
+        /*foreach (Edge<Transform> edge in pathfinder.verticesArray[0,0].Outgoing)
+        {
+            Debug.Log(edge.Cost);
+            
+        }*/
+        
+        //pathfinder.Pathfinder(pathfinder.verticesArray[1,1]);
+
+
+        
+
+        
+        
         
         //pathfinder.graph.AddEdge(pathfinder.verticesArray[0, 0], pathfinder.verticesArray[0, 1], 1);
         //pathfinder.graph.AddEdge(pathfinder.verticesArray[0, 0], pathfinder.verticesArray[1, 0], 1);
@@ -86,17 +102,17 @@ public class Board : MonoBehaviour
         Debug.Log("Vertices: " + pathfinder.graph.Vertices.Length);
         Debug.Log("Number of tiles: " + _cameraManager.BoardHeight*_cameraManager.BoardWidth);
         
-        Debug.Log(pathfinder.verticesArray[1,1].Edges.Count);
+        //Debug.Log(pathfinder.graph.Edges[1].Source.Value.position);
+        Debug.Log(pathfinder.graph.Edges[1].Destination.Value.position);
         
-        
-        
-        /*for( int i = 0; i < pathfinder.verticesArray[1,1].Edges.Count; i++ )
+
+        for( int i = 0; i < pathfinder.graph.Edges.Length; i++ )
         {
 
-            Vector3 pos1 = pathfinder.graph.Edges[1].Source.Value.position;
-            Vector3 pos2 = pathfinder.graph.Edges[1].Destination.Value.position;
+            Vector3 pos1 = pathfinder.graph.Edges[i].Source.Value.position;
+            Vector3 pos2 = pathfinder.graph.Edges[i].Destination.Value.position;
             Debug.DrawLine( pos1, pos2, Color.magenta, 500f );
-        }*/
+        }
 
         
         player.StartCoroutine("moveCall");

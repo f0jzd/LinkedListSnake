@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Transactions;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -43,6 +44,61 @@ public class Pathfinding : MonoBehaviour
             Vector3 pos2 = graph.Edges[i].Destination.Value.position;
             Debug.DrawLine( pos1, pos2, Color.magenta, 500f );
         }*/
+    }
+    
+    
+    public void Pathfinder(Vertex<Transform> start,Vertex<Transform> destination )
+    {
+
+        List<Edge<Transform>> openList = new List<Edge<Transform>>();
+        List<Edge<Transform>> closedList = new List<Edge<Transform>>();
+        Edge<Transform> current = null;
+
+
+        foreach (Edge<Transform> edge in start.Outgoing) //
+        {
+            openList.Add(edge);
+        }
+
+        foreach (Edge<Transform> edge in start.Outgoing)//
+        {
+            if (current == null)
+            {
+                current.Cost = edge.Cost; 
+            }
+            
+            if (edge.Cost < current.Cost )
+            {
+                current.Cost = edge.Cost; 
+            }
+
+            openList.Remove(edge);
+            closedList.Add(edge);
+
+            if (current.Source.Value == destination.Value)
+            {
+                return;
+            }
+
+            //Foreach neighbour of the current node
+            
+            
+
+        }
+        
+        
+    }
+
+    private float GetDistance(IVertex<Transform> Start, IVertex<Transform> Destination)
+    {
+        float distX = Mathf.Abs(Start.Value.transform.position.x - Destination.Value.transform.position.x);
+        float distY = Mathf.Abs(Start.Value.transform.position.y - Destination.Value.transform.position.y);
+
+        if (distX > distY)
+        {
+            return 10*distY + 10 * (distX - distY);
+        }
+        return 10*distX + 10 * (distY - distX);
     }
     
     
@@ -99,11 +155,7 @@ public class Graph<T>
     }
 
 
-    public void Pathfinder(Graph<T> graph, Vertex<T> start, Vertex<T> end)
-    {
-        
-
-    }
+    
 }
 
 public class Vertex<T> : IVertex<T>
@@ -122,9 +174,14 @@ public class Vertex<T> : IVertex<T>
 */
 
     public Type Type => _type;
-    public T Value => _value;
+    public T Value
+    {
+        get => _value;
+        set => _value = value;
+    }
+
     public int IndexInGraph => indexInGraph;
-    public HashSet<Edge<T>> EdgesHashSet { get; }
+    public HashSet<Edge<T>> Outgoing => outgoing;
     public Edge<T> AddEdge(IVertex<T> target, float weight = 1)
     {
         Edge<T> edge = new Edge<T>(this, target, weight);
@@ -133,7 +190,7 @@ public class Vertex<T> : IVertex<T>
     }
 
 
-    public HashSet<Edge<T>> Edges => outgoing;
+    //public HashSet<Edge<T>> Edges => outgoing;
     
 
 
@@ -153,14 +210,19 @@ public class Edge<T>
 {
     private IVertex<T> source;
     private IVertex<T> destination;
-    private float cost;//The cost of this conneection, i.e. a geographical desintation would be the distance, its what the graph represents.
+    private float cost;
+    //The cost of this conneection, i.e. a geographical desintation would be the distance, its what the graph represents.
     //This of vertices are places in a map and weight the is cost to get there.
 
     public IVertex<T> Source => source;
 
     public IVertex<T> Destination => destination;
 
-    public float Cost => cost;
+    public float Cost
+    {
+        get => cost;
+        set => cost = value;
+    }
 
     public Edge(IVertex<T> source,IVertex<T> destination, float cost = 1)
     {
@@ -175,8 +237,9 @@ public class Edge<T>
 
 public interface IVertex<T>
 {
-    T Value { get; }
+    T Value { get; set; }
     int IndexInGraph { get; }
-    HashSet<Edge<T>> EdgesHashSet { get; }
+    HashSet<Edge<T>> Outgoing { get; }
     Edge<T> AddEdge( IVertex<T> target, float weight = 1);
 }
+
