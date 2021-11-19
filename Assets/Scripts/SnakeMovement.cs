@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -38,8 +37,13 @@ public class SnakeMovement : MonoBehaviour
     private bool moveUp;
     private bool moveDown;
 
-    private SnakeMoveDirection direction; 
+    private SnakeMoveDirection direction;
 
+
+    public new Vertex<Transform> playerPos;
+    private new Pathfinding Pathfinding = new Pathfinding();
+    
+    
     enum SnakeMoveDirection
     {
      moveRight= 0,
@@ -61,10 +65,10 @@ public class SnakeMovement : MonoBehaviour
         _powerUpSpawner = FindObjectOfType<PowerUpSpawner>();
         
         direction = (SnakeMoveDirection) Random.Range(0, 3);
-        
-        
-        
-        
+
+        playerPos = new Vertex<Transform>(transform, Pathfinding.graph);
+
+
     }
 
     private void Update()
@@ -85,6 +89,8 @@ public class SnakeMovement : MonoBehaviour
     
     void Move()
     {
+        
+        
         
         int snakeX = (int) playerPosition.x;
         int snakeY = (int) playerPosition.y;

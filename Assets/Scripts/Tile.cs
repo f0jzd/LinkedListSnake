@@ -5,14 +5,6 @@ public class Tile : MonoBehaviour
 
     private string tiletype;
 
-    private int gCost;
-    
-    
-    
-    
-    
-    
-
     public string Tiletype
     {
         get => tiletype;
@@ -20,13 +12,7 @@ public class Tile : MonoBehaviour
         set => tiletype = value;
     }
     
- 
-
-    public int GCost
-    {
-        get => gCost;
-        set => gCost = value;
-    }
+    
 }
 
 
