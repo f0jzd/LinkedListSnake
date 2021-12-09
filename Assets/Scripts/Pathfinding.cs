@@ -16,8 +16,8 @@ public class Pathfinding : MonoBehaviour
         _cameraManager = FindObjectOfType<CameraManager>();
         verticesArray = new Vertex<Transform>[_cameraManager.BoardWidth,_cameraManager.BoardHeight];
     }
-    /*
-    public void findPath(Vertex<Transform> start, Vertex<Transform> target)
+    
+    /*public void findPath(Vertex<Transform> start, Vertex<Transform> target)
     {
         List<Vertex<Transform>> open = new List<Vertex<Transform>>();
         List<Vertex<Transform>> closed = new List<Vertex<Transform>>();
@@ -26,6 +26,7 @@ public class Pathfinding : MonoBehaviour
         float hValue = GetDistance(start, target);
         
         open.Add(start);
+        
         
         foreach (var edge in start.Outgoing)
         {
@@ -71,9 +72,8 @@ public class Pathfinding : MonoBehaviour
     private float GetDistance(Vertex<Transform> current, Vertex<Transform> Destination)
     {
         
-        
-        float x = Mathf.Pow(Destination.Value.transform.position.x - current.Value.transform.position.x, 2.0f);
-        float y = Mathf.Pow(Destination.Value.transform.position.y - current.Value.transform.position.y, 2.0f);
+        float x = Mathf.Abs(Destination.Value.transform.position.x - current.Value.transform.position.x);
+        float y = Mathf.Abs(Destination.Value.transform.position.y - current.Value.transform.position.y);
         
         return x + y;
     }

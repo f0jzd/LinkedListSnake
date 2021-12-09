@@ -37,22 +37,15 @@ public class Board : MonoBehaviour
                     var placeTile = Instantiate(rockTile, new Vector2(i, j), quaternion.identity);
                     _grid[i, j] = placeTile.GetComponent<RockTile>();
                     pathfinder.verticesArray[i,j] = new Vertex<Transform>( placeTile.transform, pathfinder.graph );
-                    
                 }
                 else
                 {
                     var placeTile = Instantiate(normalTile, new Vector2(i, j), quaternion.identity);
                     _grid[i, j] = placeTile.GetComponent<NormalTile>();
                     pathfinder.verticesArray[i,j] = new Vertex<Transform>( placeTile.transform, pathfinder.graph );
-                    
                 }
             }
         }
-        
-        
-        
-        
-        
         for (int i = 0; i < _cameraManager.BoardWidth; i++)
         {
             for (int j = 0; j < _cameraManager.BoardHeight; j++)
@@ -68,11 +61,6 @@ public class Board : MonoBehaviour
              
             }
         }
-
-        
         player.StartCoroutine("moveCall");
-        
-        
-
     }
 }

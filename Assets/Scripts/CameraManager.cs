@@ -1,4 +1,5 @@
 using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 public class CameraManager : MonoBehaviour {
 
@@ -15,14 +16,13 @@ public class CameraManager : MonoBehaviour {
     
     void SetupCamera()
     {
-        Camera.main.transform.position = new Vector3((float)(BoardWidth - 1)/2f, (float) (BoardHeight-1) /2f, -10f);
-        float aspectRatio = (float) Screen.width / (float) Screen.height;
-        float verticalSize = (float) BoardHeight / 2f + (float) borderSize;
-        float horizontalSize = ((float) BoardWidth / 2f + (float) borderSize ) / aspectRatio;
-        Camera.main.orthographicSize = (verticalSize > horizontalSize) ? verticalSize: horizontalSize;
-        
-
-
+        var main = Camera.main;
+        Debug.Assert(main != null, nameof(main) + " != null");
+        main.transform.position = new Vector3((BoardWidth - 1)/2f, (BoardHeight-1) /2f, -10f);
+        float aspectRatio = Screen.width / (float) Screen.height;
+        float verticalSize = BoardHeight / 2f + borderSize;
+        float horizontalSize = (BoardWidth / 2f + borderSize ) / aspectRatio;
+        main.orthographicSize = (verticalSize > horizontalSize) ? verticalSize: horizontalSize;
     }
 
 }

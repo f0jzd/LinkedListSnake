@@ -20,9 +20,8 @@ public class FruitSpawner : MonoBehaviour
         _randomX = Random.Range(0, _cameraManager.BoardWidth);
         _randomY = Random.Range(0, _cameraManager.BoardHeight);
         
-        GameObject fruitInstance = Instantiate(fruit,
-            new Vector3(_randomX,_randomY, 0),
-            quaternion.identity);
+        GameObject fruitInstance = Instantiate(fruit,new Vector3(_randomX,_randomY, 0),quaternion.identity);
+        
     }
 
     public void Spawner()
@@ -30,9 +29,7 @@ public class FruitSpawner : MonoBehaviour
         _randomX = Random.Range(0, _cameraManager.BoardWidth);
         _randomY = Random.Range(0, _cameraManager.BoardHeight);
         
-        GameObject fruitInstance = Instantiate(fruit,
-            new Vector3(_randomX,_randomY, 0),
-            quaternion.identity);
+        GameObject fruitInstance = Instantiate(fruit, new Vector3(_randomX,_randomY, 0), quaternion.identity);
         
     }
 }

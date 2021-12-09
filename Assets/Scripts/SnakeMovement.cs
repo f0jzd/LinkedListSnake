@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
 using Random = UnityEngine.Random;
 
 public class SnakeMovement : MonoBehaviour
@@ -55,7 +58,6 @@ public class SnakeMovement : MonoBehaviour
     
     void Awake()
     {
-
         board = FindObjectOfType<Board>();
         _cameraManager = FindObjectOfType<CameraManager>();
         transform.position = new Vector2(_cameraManager.BoardWidth / 2, _cameraManager.BoardHeight / 2);
@@ -70,8 +72,8 @@ public class SnakeMovement : MonoBehaviour
 
 
     }
-
-    private void Update()
+    
+    void Update()
     {
         
         if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
@@ -84,17 +86,24 @@ public class SnakeMovement : MonoBehaviour
             direction = SnakeMoveDirection.moveUp;
 
         playerPosition = transform.position;
+        
+        int snakeX = (int) playerPosition.x;
+        int snakeY = (int) playerPosition.y;
 
+        if (board._grid[snakeX,snakeY].Tiletype == "Rock")
+        {
+            Died();
+        }
+        
     }
     
     void Move()
     {
         
-        
-        
         int snakeX = (int) playerPosition.x;
         int snakeY = (int) playerPosition.y;
         var newPos = board._grid[snakeX, snakeY];
+        
         
         if (direction == SnakeMoveDirection.moveDown)
             newPos = newPos.transform.position.y-1 < 0 ? board._grid[snakeX, _cameraManager.BoardHeight-1] : board._grid[snakeX, snakeY - 1];
@@ -135,13 +144,11 @@ public class SnakeMovement : MonoBehaviour
     {
         if (other.CompareTag("Food"))
         {
-            
             _hasEaten = true;
             Destroy(other.gameObject);
         }
         if (other.CompareTag("PowerUp"))
         {
-            
             powerUpDuration += duration;
             _powerUpSpawner.Spawner();
             Destroy(other.gameObject);
@@ -149,16 +156,27 @@ public class SnakeMovement : MonoBehaviour
 
         if (other.transform.CompareTag("Tail") || other.transform.CompareTag("Wall"))
         {
-            isDead = true;
-            dieScreen.SetActive(true);
-            Time.timeScale = 0;
+            Died();
         }
     }
     private void RestartGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        Time.timeScale = 1;
+        isDead = false;
         dieScreen.SetActive(false);
+        Time.timeScale = 1; 
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Move();
+        
+        
+        
+
+    }
+
+    private void Died()
+    {
+        isDead = true;
+        dieScreen.SetActive(true);
+        Time.timeScale = 0;
     }
 
 
@@ -166,17 +184,16 @@ public class SnakeMovement : MonoBehaviour
     {
         while (true)
         {
-
             if (powerUpDuration < 0)
             {
                 Move();
-                yield return new WaitForSeconds(_currentSpeed);
+                yield return new WaitForSeconds(snakeSpeed);
             }
             if (powerUpDuration >= 0)
             {
                 powerUpDuration -= 0.1f;
                 Move();
-                yield return new WaitForSeconds(_currentSpeed/2);
+                yield return new WaitForSeconds(snakeSpeed/2);
             }
 
             yield return null;
