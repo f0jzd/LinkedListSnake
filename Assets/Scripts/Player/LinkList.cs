@@ -1,9 +1,11 @@
+using UnityEngine;
+
 public class LinkList<T>
 {
     public ListNode<T> head;
     public ListNode<T> LLtail;
     public int count;
-    private T[] _items;
+    public T[] _items;
 
 
     public LinkList()
@@ -118,4 +120,6 @@ public class LinkList<T>
             temphead = temphead.nextNode;
         }
     }
+    
+    
 }

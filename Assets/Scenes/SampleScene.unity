@@ -1008,7 +1008,7 @@ PrefabInstance:
       objectReference: {fileID: 2064750925}
     - target: {fileID: 6427562722697094323, guid: b48ed70b700bbce4d9ae8a57bf993f42, type: 3}
       propertyPath: snakeSpeed
-      value: 0.2
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 6427562722697094323, guid: b48ed70b700bbce4d9ae8a57bf993f42, type: 3}
       propertyPath: restartButton

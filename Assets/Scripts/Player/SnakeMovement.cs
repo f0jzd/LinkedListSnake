@@ -12,7 +12,7 @@ public class SnakeMovement : MonoBehaviour
     
     public GameObject dieScreen;
     public Button restartButton;
-    private LinkList<Transform> tails = new LinkList<Transform>();
+    public LinkList<Transform> tails = new LinkList<Transform>();
     
     [SerializeField] private GameObject tailPrefab;
     [SerializeField] private float duration;

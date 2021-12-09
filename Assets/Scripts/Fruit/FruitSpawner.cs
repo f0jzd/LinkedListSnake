@@ -11,9 +11,14 @@ public class FruitSpawner : MonoBehaviour
 
     private int _randomY;
     private int _randomX;
+
+    private SnakeMovement player;
     
     void Start()
     {
+
+        player = FindObjectOfType<SnakeMovement>();
+        
         _cameraManager = FindObjectOfType<CameraManager>();
         _tileManager = FindObjectOfType<TileManager>();
         
@@ -28,8 +33,10 @@ public class FruitSpawner : MonoBehaviour
     {
         _randomX = Random.Range(0, _cameraManager.BoardWidth);
         _randomY = Random.Range(0, _cameraManager.BoardHeight);
-        
+
         GameObject fruitInstance = Instantiate(fruit, new Vector3(_randomX,_randomY, 0), quaternion.identity);
+        
+        Debug.Log(player.tails._items);
         
     }
 }
